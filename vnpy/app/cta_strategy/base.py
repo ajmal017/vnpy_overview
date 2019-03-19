@@ -54,6 +54,8 @@ EVENT_CTA_LOG = "eCtaLog"
 EVENT_CTA_STRATEGY = "eCtaStrategy"
 EVENT_CTA_STOPORDER = "eCtaStopOrder"
 
+
+# 由两个常量类，当前头寸方向和操作来定义4中订单类型
 ORDER_CTA2VT = {
     CtaOrderType.BUY: (Direction.LONG, Offset.OPEN),
     CtaOrderType.SELL: (Direction.SHORT, Offset.CLOSE),

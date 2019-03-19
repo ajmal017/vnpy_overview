@@ -10,6 +10,7 @@ from threading import Thread
 from queue import Queue
 
 import rqdatac
+# rqdatac暂时用不上
 
 from vnpy.event import Event, EventEngine
 from vnpy.trader.engine import BaseEngine, MainEngine
@@ -37,13 +38,26 @@ from .base import (
     ORDER_CTA2VT,
     STOPORDER_PREFIX
 )
+# base里面的dataclass，包含了从constant中衍生来的一些基本的base的基础数据结构
+
+
 from .template import CtaTemplate
+# CTA策略模板
 
 
+
+
+
+# CtaEngine和backtesting engine是非常类似的
 class CtaEngine(BaseEngine):
-    """"""
+    """BaseEngine继承自ABC,并由MainEngine和EventEngine初始化
+    其中MainEngine则又由EventEngine初始化，并启动EventEngine
+
+    """
 
     engine_type = EngineType.LIVE  # live trading engine
+    # 这个地方不加self那么就是全局变量，但是后面get_engine_type又是用到的成员变量
+    # 所以还是要加上self比较好
 
     setting_filename = "cta_strategy_setting.json"
     data_filename = "cta_strategy_data.json"
@@ -59,11 +73,9 @@ class CtaEngine(BaseEngine):
         self.classes = {}  # class_name: stategy_class
         self.strategies = {}  # strategy_name: strategy
 
-        self.symbol_strategy_map = defaultdict(
-            list)  # vt_symbol: strategy list
+        self.symbol_strategy_map = defaultdict(list)  # vt_symbol: strategy list
         self.orderid_strategy_map = {}  # vt_orderid: strategy
-        self.strategy_orderid_map = defaultdict(
-            set)  # strategy_name: orderid list
+        self.strategy_orderid_map = defaultdict(set)  # strategy_name: orderid list
 
         self.stop_order_count = 0  # for generating stop_orderid
         self.stop_orders = {}  # stop_orderid: stop_order
@@ -331,6 +343,7 @@ class CtaEngine(BaseEngine):
 
         req = order.create_cancel_request()
         self.main_engine.cancel_limit_order(req, order.gateway_name)
+    # cancel_limit_order是从MainEngine中继承而来的？？
 
     def cancel_stop_order(self, strategy: CtaTemplate, stop_orderid: str):
         """
@@ -367,6 +380,7 @@ class CtaEngine(BaseEngine):
             return self.send_stop_order(strategy, order_type, price, volume)
         else:
             return self.send_limit_order(strategy, order_type, price, volume)
+    #     stop和limit函数的定义在上面
 
     def cancel_order(self, strategy: CtaTemplate, vt_orderid: str):
         """
@@ -379,6 +393,7 @@ class CtaEngine(BaseEngine):
     def cancel_all(self, strategy: CtaTemplate):
         """
         Cancel all active orders of a strategy.
+        同理是调用上面两个函数
         """
         vt_orderids = self.strategy_orderid_map[strategy.strategy_name]
         if not vt_orderids:
@@ -391,10 +406,8 @@ class CtaEngine(BaseEngine):
         """"""
         return self.engine_type
 
-    def load_bar(
-            self, vt_symbol: str, days: int, interval: Interval, callback: Callable
-    ):
-        """"""
+    def load_bar(self, vt_symbol: str, days: int, interval: Interval, callback: Callable):
+        """callback就一般是on_bar"""
         end = datetime.now()
         start = end - timedelta(days)
 
