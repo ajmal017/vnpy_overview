@@ -131,8 +131,12 @@ class OrderData(BaseData):
             return False
 
     def create_cancel_request(self):
-          """Create cancel request object from order."""
-        req = CancelRequest(orderid=self.orderid, symbol=self.symbol, exchange=self.exchange)
+        """
+        Create cancel request object from order.
+        """
+        req = CancelRequest(
+            orderid=self.orderid, symbol=self.symbol, exchange=self.exchange
+        )
         return req
 
 
