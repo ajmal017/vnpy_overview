@@ -14,6 +14,7 @@ class CtaTemplate(ABC):
     author = ""
     parameters = []
     variables = []
+    # 这里parameters就是策略需要提前提供的参数，variables是后面相应的计算出来的指标
 
     def __init__(
         self,
@@ -35,6 +36,7 @@ class CtaTemplate(ABC):
         self.variables.insert(2, "pos")
 
         self.update_setting(setting)
+    #     遍历setting中的元素，然后进行赋值进去
 
     def update_setting(self, setting: dict):
         """
@@ -44,6 +46,8 @@ class CtaTemplate(ABC):
             if name in setting:
                 setattr(self, name, setting[name])
 
+    # @classmethod不需要实例化，注意cls
+    # get_class_parameters和get_parameters两个函数功能一致
     @classmethod
     def get_class_parameters(cls):
         """
@@ -63,6 +67,7 @@ class CtaTemplate(ABC):
             strategy_parameters[name] = getattr(self, name)
         return strategy_parameters
 
+    # 与上一个函数别无二致，基本差不多
     def get_variables(self):
         """
         Get strategy variables dict.
@@ -72,6 +77,7 @@ class CtaTemplate(ABC):
             strategy_variables[name] = getattr(self, name)
         return strategy_variables
 
+    # 把这个类的基本信息汇总到一个字典中，再返回
     def get_data(self):
         """
         Get strategy data.
@@ -89,12 +95,15 @@ class CtaTemplate(ABC):
     def on_init(self):
         """
         Callback when strategy is inited.
+        在engine中，被成员函数call_strategy_func调用
+        会在engine中被调用，用于处理parameters
         """
         pass
 
     def on_start(self):
         """
         Callback when strategy is started.
+        同理，在engine中，被成员函数call_strategy_func调用
         """
         pass
 
@@ -109,7 +118,7 @@ class CtaTemplate(ABC):
         Callback of new tick data update.
         """
         pass
-
+    # on_tick和on_bar在自己类里面被load_tick和load_bar中被调用
     def on_bar(self, bar: BarData):
         """
         Callback of new bar data update.
@@ -119,12 +128,14 @@ class CtaTemplate(ABC):
     def on_trade(self, trade: TradeData):
         """
         Callback of new trade data update.
+        在cross_limit_order等函数中被调用
         """
         pass
 
     def on_order(self, order: OrderData):
         """
         Callback of new order data update.
+        在cross_limit_order等函数中被调用
         """
         pass
 
@@ -275,7 +286,7 @@ class CtaSignal(ABC):
 
 
 class TargetPosTemplate(CtaTemplate):
-    """"""
+    """暂时不是很清楚，应该是某种策略交易的模板类，从CtaTemplate继承而来，并重写部分函数"""
 
     author = '量衍投资'
 
