@@ -119,6 +119,7 @@ class CtaTemplate(ABC):
         """
         pass
     # on_tick和on_bar在自己类里面被load_tick和load_bar中被调用
+    # 然后在进一步通过cta_engine去调用该on_bar或者on_tick函数
     def on_bar(self, bar: BarData):
         """
         Callback of new bar data update.
