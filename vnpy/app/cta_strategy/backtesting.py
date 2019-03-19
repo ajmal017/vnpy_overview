@@ -650,6 +650,7 @@ class BacktestingEngine:
                 time=self.datetime.strftime("%H:%M:%S"),
                 gateway_name=self.gateway_name,
             )
+            # TradeData类是没有 gateway_name这个成员变量的
             # gateway_name为BACKTESTING
             trade.datetime = self.datetime
             # TradeData好像是没有datetime这个成员变量的
@@ -707,6 +708,7 @@ class BacktestingEngine:
                 status=Status.ALLTRADED,
                 gateway_name=self.gateway_name,
             )
+            # OrderData类是没有 gateway_name这个成员变量的
 
             self.limit_orders[order.vt_orderid] = order
 
@@ -732,6 +734,7 @@ class BacktestingEngine:
                 time=self.datetime.strftime("%H:%M:%S"),
                 gateway_name=self.gateway_name,
             )
+            # TradeData类是没有 gateway_name这个成员变量的
             trade.datetime = self.datetime
 
             self.trades[trade.vt_tradeid] = trade
@@ -794,6 +797,10 @@ class BacktestingEngine:
         )
 
         self.active_stop_orders[stop_order.stop_orderid] = stop_order
+        # ---------------------------------------------------
+        # active_stop_orders是一个词典，终于找到其写入的地方了，这一点，pycharm是没有检测到的
+        # active_stop_order对应到active_limit_order,用于存放当前发送了的stop_order
+        # ---------------------------------------------------
         self.stop_orders[stop_order.stop_orderid] = stop_order
 
         return stop_order.stop_orderid
@@ -814,6 +821,7 @@ class BacktestingEngine:
             status=Status.NOTTRADED,
             gateway_name=self.gateway_name,
         )
+        # OrderData类是没有 gateway_name这个成员变量的
 
         self.active_limit_orders[order.vt_orderid] = order
         self.limit_orders[order.vt_orderid] = order
@@ -834,12 +842,14 @@ class BacktestingEngine:
         if vt_orderid not in self.active_stop_orders:
             return
         stop_order = self.active_stop_orders.pop(vt_orderid)
-
+        # active_stop_orders 容纳正在stop_orders
+        # 用于撤销stop_order
         stop_order.status = StopOrderStatus.CANCELLED
         self.strategy.on_stop_order(stop_order)
+    #     on_stop_order在策略里面用于通知
 
     def cancel_limit_order(self, strategy: CtaTemplate, vt_orderid: str):
-        """"""
+        """代码基本同上"""
         if vt_orderid not in self.active_limit_orders:
             return
         order = self.active_limit_orders.pop(vt_orderid)
@@ -849,9 +859,11 @@ class BacktestingEngine:
 
     def cancel_all(self, strategy: CtaTemplate):
         """
-        Cancel all orders, both limit and stop.
+        Cancel all orders, both limit and stop.结合上面两个函数，取消全部订单
+        通过调用上面两个函数实现
         """
         vt_orderids = list(self.active_limit_orders.keys())
+        # 这里的vt_orderids改成limit_orderids会更合理
         for vt_orderid in vt_orderids:
             self.cancel_limit_order(strategy, vt_orderid)
 
@@ -971,12 +983,12 @@ def optimize(
     pricetick: float,
     capital: int,
     end: datetime,
-    mode: BacktestingMode,
-):
+    mode: BacktestingMode,):
     """
     Function for running in multiprocessing.pool
     """
     engine = BacktestingEngine()
+    # 类里面调用一个函数，这个函数调用这个类本身！！！
     engine.set_parameters(
         vt_symbol=vt_symbol,
         interval=interval,
