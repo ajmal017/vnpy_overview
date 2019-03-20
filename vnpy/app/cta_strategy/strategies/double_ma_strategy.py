@@ -67,6 +67,9 @@ class DoubleMaStrategy(CtaTemplate):
 
         am = self.am
         am.update_bar(bar)
+        # ------------------
+        # 默认是初始化100根K线
+        # ------------------
         if not am.inited:
             return
 

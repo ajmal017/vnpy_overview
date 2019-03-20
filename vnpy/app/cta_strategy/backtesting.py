@@ -193,9 +193,9 @@ class BacktestingEngine:
     def add_strategy(self, strategy_class: type, setting: dict):
         """"""
         self.strategy_class = strategy_class
-        self.strategy = strategy_class(
-            self, strategy_class.__name__, self.vt_symbol, setting
-        )
+        # 这里只是把这个类的定义给它传递过来
+        self.strategy = strategy_class(self, strategy_class.__name__, self.vt_symbol, setting)
+    #     这里在策略的构造函数里面,可以把策略这个类进行实例化
 
     def load_data(self):
         """"""

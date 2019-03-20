@@ -20,7 +20,7 @@ class Lyn_Knn_Strategy(CtaTemplate):
     ma_window = 5  # 暂定是5个window,用于计算收盘价的乖离度
 
     parameters = ['num_of_k']
-    variables = ['']
+    variables = ['predict_return']
 
     def __init__(self, cta_engine, strategy_name, vt_symbol, setting):
         """"""

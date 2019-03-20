@@ -121,9 +121,7 @@ class BarGenerator:
     2. generateing x minute bar data from 1 minute data
     """
 
-    def __init__(
-            self, on_bar: Callable, xmin: int = 0, on_xmin_bar: Callable = None
-    ):
+    def __init__(self, on_bar: Callable, xmin: int = 0, on_xmin_bar: Callable = None):
         """Constructor"""
         self.bar = None
         self.on_bar = on_bar
@@ -388,6 +386,7 @@ class ArrayManager(object):
         return result[-1]
 
     def boll(self, n, dev, array=False):
+
         """
         Bollinger Channel.
         """
