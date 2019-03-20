@@ -9,13 +9,13 @@ from vnpy.app.cta_strategy import (
     ArrayManager,
 )
 import numpy as np
-
+import pandas as pd
 
 class Lyn_Knn_Strategy(CtaTemplate):
     """this strategy is based on the KNN ML ALGO"""
     author = 'lyn'
 
-    num_of_k = 5
+    num_of_knn = 5 # default num of the K nearst neighbor
     look_back = 5  # how much data we used in the past
     ma_window = 5  # 暂定是5个window,用于计算收盘价的乖离度
 
@@ -83,3 +83,44 @@ class Lyn_Knn_Strategy(CtaTemplate):
                                         - am.min(self.ma_window, bar_component='volume',array=False))
 
         combination_matrix = np.array((close_bias_norm,close_bias_norm))
+        past_market_data = pd.DataFrame(np.array([1,2,3]))
+        all_dist = np.sqrt(np.sum(np.square( past_market_data.values - combination_matrix), axis=1))
+        dist_index = all_dist.argsort()[:self.num_of_knn]
+        # ----------------------------------------------------
+        predict_return = past_market_data.iloc[dist_index]['future_return'].mean()
+        # ----------------------------------------------------
+    #     future return is the target variable of the predicting
+
+        if predict_return >= 0.03:
+            if self.pos == 0:
+                self.buy(bar.close_price, 1)
+            elif self.pos < 0:
+                self.cover(bar.close_price, 1)
+                self.buy(bar.close_price, 1)
+
+        elif predict_return <= -0.03:
+            if self.pos == 0:
+                self.short(bar.close_price, 1)
+            elif self.pos > 0:
+                self.sell(bar.close_price, 1)
+                self.short(bar.close_price, 1)
+
+        self.put_event()
+
+    def on_order(self, order: OrderData):
+        """
+        Callback of new order data update.
+        """
+        pass
+
+    def on_trade(self, trade: TradeData):
+        """
+        Callback of new trade data update.
+        """
+        self.put_event()
+
+    def on_stop_order(self, stop_order: StopOrder):
+        """
+        Callback of stop order update.
+        """
+        pass
