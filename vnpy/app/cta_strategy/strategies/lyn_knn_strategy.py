@@ -76,3 +76,10 @@ class Lyn_Knn_Strategy(CtaTemplate):
         close_bias = bar.close_price - ma_value
         close_bias_norm = close_bias / (am.max(self.ma_window, array=False)
                                         - am.min(self.ma_window, array=False))
+
+        volume_ma_value = am.sma(self.ma_window, bar_component='volume',array=False)
+        volume_bias = bar.volume - volume_ma_value
+        close_bias_norm = volume_bias / (am.max(self.ma_window,bar_component='volume', array=False)
+                                        - am.min(self.ma_window, bar_component='volume',array=False))
+
+        combination_matrix = np.array((close_bias_norm,close_bias_norm))

@@ -122,7 +122,7 @@ class BarGenerator:
     """
 
     def __init__(
-        self, on_bar: Callable, xmin: int = 0, on_xmin_bar: Callable = None
+            self, on_bar: Callable, xmin: int = 0, on_xmin_bar: Callable = None
     ):
         """Constructor"""
         self.bar = None
@@ -286,33 +286,50 @@ class ArrayManager(object):
         """
         return self.volume_array
 
-    def max(self, n, array=False):
+    def max(self, n, bar_component='close',array=False):
         """
         Simple moving average.
         """
-        result = talib.MAX(self.close, n)
-        if array:
-            return result
-        return result[-1]
+        if bar_component == 'volume':
+            result = talib.MAX(self.volume, n)
+            if array:
+                return result
+            return result[-1]
+        else:
+            result = talib.MAX(self.close, n)
+            if array:
+                return result
+            return result[-1]
 
-    def min(self, n, array=False):
+    def min(self, n, bar_component='close',array=False):
         """
         Simple moving average.
         """
-        result = talib.MIN(self.close, n)
-        if array:
-            return result
-        return result[-1]
+        if bar_component == 'volume':
+            result = talib.MIN(self.volume, n)
+            if array:
+                return result
+            return result[-1]
+        else:
+            result = talib.MIN(self.close, n)
+            if array:
+                return result
+            return result[-1]
 
-
-    def sma(self, n, array=False):
+    def sma(self, n, bar_component='close',array=False):
         """
         Simple moving average.
         """
-        result = talib.SMA(self.close, n)
-        if array:
-            return result
-        return result[-1]
+        if bar_component == 'volume':
+            result = talib.SMA(self.volume, n)
+            if array:
+                return result
+            return result[-1]
+        else:
+            result = talib.SMA(self.close, n)
+            if array:
+                return result
+            return result[-1]
 
     def std(self, n, array=False):
         """
