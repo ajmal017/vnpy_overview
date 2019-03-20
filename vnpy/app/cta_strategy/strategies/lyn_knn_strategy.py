@@ -8,6 +8,7 @@ from vnpy.app.cta_strategy import (
     BarGenerator,
     ArrayManager,
 )
+import numpy as np
 
 
 class Lyn_Knn_Strategy(CtaTemplate):
@@ -16,7 +17,7 @@ class Lyn_Knn_Strategy(CtaTemplate):
 
     num_of_k = 5
     look_back = 5  # how much data we used in the past
-    ma_window = 5 #暂定是5个window,用于计算收盘价的乖离度
+    ma_window = 5  # 暂定是5个window,用于计算收盘价的乖离度
 
     parameters = ['num_of_k']
     variables = ['']
@@ -67,36 +68,11 @@ class Lyn_Knn_Strategy(CtaTemplate):
         if not am.inited:
             return
 
-
-        fast_ma = am.sma(self.ma_window, array=True)
-        close = am.close / fast_ma
-
-
-
-
-        fast_ma = am.sma(self.fast_window, array=True)
-        self.fast_ma0 = fast_ma[-1]
-        self.fast_ma1 = fast_ma[-2]
-
-        slow_ma = am.sma(self.slow_window, array=True)
-        self.slow_ma0 = slow_ma[-1]
-        self.slow_ma1 = slow_ma[-2]
-
-        cross_over = self.fast_ma0 > self.slow_ma0 and self.fast_ma1 < self.slow_ma1
-        cross_below = self.fast_ma0 < self.slow_ma0 and self.fast_ma1 > self.slow_ma1
-
-        if cross_over:
-            if self.pos == 0:
-                self.buy(bar.close_price, 1)
-            elif self.pos < 0:
-                self.cover(bar.close_price, 1)
-                self.buy(bar.close_price, 1)
-
-        elif cross_below:
-            if self.pos == 0:
-                self.short(bar.close_price, 1)
-            elif self.pos > 0:
-                self.sell(bar.close_price, 1)
-                self.short(bar.close_price, 1)
-
-        self.put_event()
+        # am.close是一个bar中的一个有close_price组成的array，并
+        # 在每次update_bar的时候，会变长
+        # array=True会返回一个向量,否则为数值
+        # bar.close返回一个数值
+        ma_value = am.sma(self.ma_window, array=False)
+        close_bias = bar.close_price - ma_value
+        close_bias_norm = close_bias / (am.max(self.ma_window, array=False)
+                                        - am.min(self.ma_window, array=False))

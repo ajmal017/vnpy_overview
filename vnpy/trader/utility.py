@@ -286,6 +286,25 @@ class ArrayManager(object):
         """
         return self.volume_array
 
+    def max(self, n, array=False):
+        """
+        Simple moving average.
+        """
+        result = talib.MAX(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def min(self, n, array=False):
+        """
+        Simple moving average.
+        """
+        result = talib.MIN(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+
     def sma(self, n, array=False):
         """
         Simple moving average.
