@@ -189,6 +189,7 @@ class MultiSignalStrategy(TargetPosTemplate):
         Callback of new tick data update.
         """
         super(MultiSignalStrategy, self).on_tick(tick)
+        # 调用TargetPosTemplate的on_tick函数
 
         self.rsi_signal.on_tick(tick)
         self.cci_signal.on_tick(tick)
