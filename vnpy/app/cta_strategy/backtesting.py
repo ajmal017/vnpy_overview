@@ -87,7 +87,6 @@ class OptimizationSetting:
 
 class BacktestingEngine:
     """"""
-    trades: Dict[Any, Any]
 
     engine_type = EngineType.BACKTESTING
     gateway_name = "BACKTESTING"

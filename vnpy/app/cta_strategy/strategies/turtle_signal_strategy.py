@@ -89,7 +89,7 @@ class TurtleSignalStrategy(CtaTemplate):
             self.short_entry = 0
             self.long_stop = 0
             self.short_stop = 0
-
+            # on_bar中可以继承诸多自定义的函数
             self.send_buy_orders(self.entry_up)
             self.send_short_orders(self.entry_down)
         elif self.pos > 0:
