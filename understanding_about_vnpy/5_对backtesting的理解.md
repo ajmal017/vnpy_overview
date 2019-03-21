@@ -61,3 +61,9 @@ self.daily_results = {}  用于容纳每天的盈亏
 
 self.daily_df = None  最终的回测结构，一个Pandas DataFrame
 
+1. clear_data用于把成员变量先初始化**清空**，防止意外
+2. set_parameters,初始化一部分成员变量，包括其实资金和开始结束日期
+3. add_strategy，通过传入相应的策略类和该策略对应的setting字典，对策略进行实例化，然后
+赋值给回测引擎的成员变量self.strategy，之后self.strategy就可以传入相关参数再调用之
+4.load_data，由于是回测，所以只是从mongodb中提起相关的历史数据，然后转换为bar或者tick类型的数据
+
