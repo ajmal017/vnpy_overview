@@ -217,6 +217,8 @@ class CtaTemplate(ABC):
         callback: Callable = None,):
         """
         Load historical bar data for initializing strategy.
+        默认days传入为10，也就是加载10天的分钟级数据
+
         """
         if not callback:
             callback = self.on_bar

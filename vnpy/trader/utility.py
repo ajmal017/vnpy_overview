@@ -139,6 +139,7 @@ class BarGenerator:
         new_minute = False
 
         if not self.bar:
+            # 默认bar初始化为None
             new_minute = True
         elif self.bar.datetime.minute != tick.datetime.minute:
             self.bar.datetime = self.bar.datetime.replace(
