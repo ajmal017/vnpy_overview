@@ -287,10 +287,8 @@ class BacktestingEngine:
         start_pos = 0
 
         for daily_result in self.daily_results.values():
-            daily_result.calculate_pnl(
-                # calculate_pnl函数在DailyResult类中是成员函数
-                pre_close, start_pos, self.size, self.rate, self.slippage
-            )
+            daily_result.calculate_pnl(pre_close, start_pos, self.size, self.rate, self.slippage)
+            # calculate_pnl函数在DailyResult类中是成员函数
             # 这里的size，rate，slippage在构造函数中被设定
             # 价格的更新在update_daily_close函数中计算和实现
             # ----update_daily_close中的close_price最终由new_bar提供----
