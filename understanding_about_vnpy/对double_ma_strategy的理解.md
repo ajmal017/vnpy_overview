@@ -30,6 +30,8 @@ Event类中,打上EVENT_CTA_STRATEGY的标签,插入到时间引擎中,然后交
 13. ArrayManager的update_bar则是用合成好的bar,去更新成员变量中的array
 14. ArrayManager调用一次update_bar,计数一次,当count>=100(默认是100),即是调入100根K线后
 将ArrayManager标记为初始化完成inited=False
+15. 四个交易函数buy,cover,short,sell,均通过template中的send_order函数，通过传入四种相应交易指令的常量，再调用ctaengine的send_order
+函数，调用send_limit_order或者send_stop_order函数，发送限价单或者发送止损单（通过底层接口）
 
 
 
