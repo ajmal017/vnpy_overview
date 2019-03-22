@@ -1,6 +1,3 @@
-"""
-"""
-
 import logging
 import smtplib
 from abc import ABC

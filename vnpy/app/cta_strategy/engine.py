@@ -42,12 +42,9 @@ from .base import (
 
 
 from .template import CtaTemplate
+
+
 # CTA策略模板
-
-
-
-
-
 # CtaEngine和backtesting engine是非常类似的
 class CtaEngine(BaseEngine):
     """BaseEngine继承自ABC,并由MainEngine和EventEngine初始化
@@ -129,9 +126,7 @@ class CtaEngine(BaseEngine):
 
         self.write_log("RQData数据接口初始化成功")
 
-    def query_bar_from_rq(
-            self, vt_symbol: str, interval: Interval, start: datetime, end: datetime
-    ):
+    def query_bar_from_rq(self, vt_symbol: str, interval: Interval, start: datetime, end: datetime):
         """
         Query bar data from RQData.
         """
@@ -261,13 +256,7 @@ class CtaEngine(BaseEngine):
                         strategy, strategy.on_stop_order, stop_order
                     )
 
-    def send_limit_order(
-            self,
-            strategy: CtaTemplate,
-            order_type: CtaOrderType,
-            price: float,
-            volume: float,
-    ):
+    def send_limit_order(self, strategy: CtaTemplate, order_type: CtaOrderType, price: float, volume: float, ):
         """
         Send a new order.
         """
@@ -299,13 +288,7 @@ class CtaEngine(BaseEngine):
 
         return vt_orderid
 
-    def send_stop_order(
-            self,
-            strategy: CtaTemplate,
-            order_type: CtaOrderType,
-            price: float,
-            volume: float,
-    ):
+    def send_stop_order(self, strategy: CtaTemplate, order_type: CtaOrderType, price: float, volume: float, ):
         """
         Send a new order.
         """
@@ -343,6 +326,7 @@ class CtaEngine(BaseEngine):
 
         req = order.create_cancel_request()
         self.main_engine.cancel_limit_order(req, order.gateway_name)
+
     # cancel_limit_order是从MainEngine中继承而来的？？
 
     def cancel_stop_order(self, strategy: CtaTemplate, stop_orderid: str):
@@ -366,21 +350,15 @@ class CtaEngine(BaseEngine):
 
         self.call_strategy_func(strategy, strategy.on_stop_order, stop_order)
 
-    def send_order(
-            self,
-            strategy: CtaTemplate,
-            order_type: CtaOrderType,
-            price: float,
-            volume: float,
-            stop: bool,
-    ):
+    def send_order(self, strategy: CtaTemplate, order_type: CtaOrderType, price: float, volume: float, stop: bool, ):
         """
         """
         if stop:
             return self.send_stop_order(strategy, order_type, price, volume)
         else:
             return self.send_limit_order(strategy, order_type, price, volume)
-    #     stop和limit函数的定义在上面
+
+    #     stop和limit函数的定义在上面s
 
     def cancel_order(self, strategy: CtaTemplate, vt_orderid: str):
         """
@@ -447,9 +425,7 @@ class CtaEngine(BaseEngine):
         for tick in s:
             callback(tick)
 
-    def call_strategy_func(
-            self, strategy: CtaTemplate, func: Callable, params: Any = None
-    ):
+    def call_strategy_func(self, strategy: CtaTemplate, func: Callable, params: Any = None):
         """
         Call function of a strategy and catch any exception raised.
         """
@@ -465,9 +441,7 @@ class CtaEngine(BaseEngine):
             msg = f"触发异常已停止\n{traceback.format_exc()}"
             self.write_log(msg, strategy)
 
-    def add_strategy(
-            self, class_name: str, strategy_name: str, vt_symbol: str, setting: dict
-    ):
+    def add_strategy(self, class_name: str, strategy_name: str, vt_symbol: str, setting: dict):
         """
         Add a new strategy.
         """
