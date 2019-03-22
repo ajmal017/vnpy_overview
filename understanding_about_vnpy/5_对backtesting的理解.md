@@ -83,3 +83,33 @@ new_bar还是new_tick,然后策略初始化,会先从数据库加载10天(默认
 12. 计算完pnl之后,对pre_close和start_pos,用计算完的daily_result的成员变量进行更新
 13. 待daily_results中所有的daily_result都计算完毕后,将daily_results转换为字典,再转换为Pandas DataFrame,便于再
 进一步计算相关的统计指标
+14. calculate_statistics采用向量化计算相关策略的性能指标，较容易理解，然后把所有的统计结果汇总到一个字典中，并返回
+15. 得到calculate_statistics的返回值，方便在后续的参数优化
+16. show_chart，单纯的把统计指标画出来，没有别的
+17. **run_optimization**，用于策略的参数优化，需要用到optimization_setting类来生成参数组合，optimize函数来多次跑策略
+18. generate_setting,把在优化类中的参数字典params中的所有参数做笛卡尔积，生成所有的参数组合，然后依次进行回测
+19. pool = multiprocessing.Pool(multiprocessing.cpu_count())采用进程池，多核机器并行跑回测
+20. pool.apply_async采用非阻塞的异步多进程，并提供相关参数给optimize函数，计算完后对参数进行排序输出，并返回计算结果
+可以自行存储起来做进一步分析
+21. update_daily_close讲bar的close_price,追加到daily_results中
+22. new_bar和new_tick，会在跑回测的时候二选一，来处理bar或者tick数据，然后都会调用
+cross_limit_order和cross_stop_order函数来发出相应的订单
+23. cross_limit_order，首先用新来的bar或者tick对long_cross_price，short_cross_price，long_best_price，short_best_price进行
+更新，然后遍历active_limit_orders中，尚未发出的，尚未成交的订单，调用策略中的on_order,并发出订单，然后从active_limit_orders
+中pop出已经发出的订单，这时候，交易次数自增1
+24. 然后，由空头和多头，赋值到策略类的仓位上
+35. 完成的每笔交易，生成每个TradeData类，追加到trades中，方便后续统计
+36. cross_stop_order与cross_limit_order大致差不多
+37. load_bar，load_tick用于讲回测引擎的回调函数设置为用户自定义的on_bar或者on_tick,在runbacktesting中被调用
+38. stop_orderid，也就是止损单号，由止损前缀STOP和订单数组成（**不过我觉得可以把数字换成是时间，这样具有唯一性**）
+39. 然后把所有的止损单追加到active_stop_orders和stop_orders容器中
+40. send_limit_order和send_stop_order基本一致
+41. cancel_stop_order--撤销止损单，根据给定的订单号，先判断是否在active_stop_orders容器中，
+如果存在则把这个订单从容器中用pop取出，讲订单的状态赋值为StopOrderStatus.CANCELLED，然后调用
+策略的on_stop_order函数，撤销这个订单
+42. cancel_limit_order和cancel_stop_order大致一致
+43. cancel_all和cancel_order均用于取消所有的止损单
+44. write_log，单纯写入日志到日志容器中
+45. send_email发邮件
+46. get_engine_type返回当前引擎的类型，默认是回测引擎
+47. output,直接把相关的信息输出到控制台

@@ -38,9 +38,7 @@ class OptimizationSetting:
         self.params = {}
         self.target = ""
 
-    def add_parameter(
-        self, name: str, start: float, end: float = None, step: float = None
-    ):
+    def add_parameter(self, name: str, start: float, end: float = None, step: float = None):
         """"""
         if not end and not step:
             self.params[name] = [start]
@@ -489,7 +487,7 @@ class BacktestingEngine:
         """"""
         # Get optimization setting and target
         settings = optimization_setting.generate_setting()
-        target_name = optimization_setting.target_name
+        target_name = optimization_setting.target
         # 这里的target_name应该是target
 
         if not settings:
@@ -595,7 +593,7 @@ class BacktestingEngine:
             if order.status == Status.SUBMITTING:
                 order.status = Status.NOTTRADED
                 self.strategy.on_order(order)
-            #     此on_order函数在具体策略中被override,写为未成交?
+            #     此on_order函数在具体策略中被override,用于发送订单！
 
             # Check whether limit orders can be filled.
             long_cross = (
@@ -765,13 +763,7 @@ class BacktestingEngine:
         self.days = days
         self.callback = callback
 
-    def send_order(
-        self,
-        strategy: CtaTemplate,
-        order_type: CtaOrderType,
-        price: float,
-        volume: float,
-        stop: bool = False,):
+    def send_order(self,strategy: CtaTemplate,order_type: CtaOrderType,price: float,volume: float,stop: bool = False,):
         """"""
         price = round_to_pricetick(price, self.pricetick)
         if stop:

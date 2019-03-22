@@ -764,4 +764,4 @@ class CtaEngine(BaseEngine):
         else:
             subject = "CTA策略引擎"
 
-        self.main_engine.send_email(subject, msg)
+        self.main_engine.sewrite_lognd_email(subject, msg)
