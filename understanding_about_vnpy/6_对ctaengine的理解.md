@@ -65,4 +65,10 @@ self.rq_symbols = set()
 30. init_all_strategies,遍历策略容器,调用前面的init_strategy函数,也是调用相应策略的on_init函数,初始化所有的策略
 31. start_all_strategies,遍历策略容器,调用前面的start_strategy函数,也是调用相应策略的on_start函数,开始所有的策略
 32. stop_all_strategies,遍历策略容器,调用前面的stop_strategy函数,也是调用相应策略的on_stop函数,开始所有的策略
-33. 
+33. load_strategy_setting,从策略文件所在路径中,读取所有的策略,然后调用add_strategy函数来加载策略的各项参数
+34. update_strategy_setting,则是把内存中的策略设置保存到磁盘中
+35. remove_strategy_setting,从策略设置容器中,删除指定策略的设定,然后再保存到文件中,完成对先前文件的覆盖,也就是完成了更新
+36. put_stop_order_event,把一个stop_order放到事件引擎中
+37. put_strategy_event,把一个策略数据,放到事件引擎中
+38. write_log,根据策略的名字,加上相应的消息,合成为LogData类型的日志数据,再添加到事件引擎
+39. send_email,发送电子邮件系列
