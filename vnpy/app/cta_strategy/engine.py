@@ -1,4 +1,3 @@
-""""""
 import importlib
 import os
 import traceback
@@ -43,7 +42,6 @@ from .base import (
 
 from .template import CtaTemplate
 
-
 # CTA策略模板
 # CtaEngine和backtesting engine是非常类似的
 class CtaEngine(BaseEngine):
@@ -61,8 +59,7 @@ class CtaEngine(BaseEngine):
 
     def __init__(self, main_engine: MainEngine, event_engine: EventEngine):
         """"""
-        super(CtaEngine, self).__init__(
-            main_engine, event_engine, "CtaStrategy")
+        super(CtaEngine, self).__init__(main_engine, event_engine, "CtaStrategy")
 
         self.strategy_setting = {}  # strategy_name: dict
         self.strategy_data = {}  # strategy_name: dict
@@ -235,9 +232,7 @@ class CtaEngine(BaseEngine):
                     else:
                         price = tick.bid_price_5
 
-                vt_orderid = self.send_limit_order(
-                    strategy, stop_order.order_type, price, stop_order.volume
-                )
+                vt_orderid = self.send_limit_order(strategy, stop_order.order_type, price, stop_order.volume)
 
                 # Update stop order status if placed successfully
                 if vt_orderid:
@@ -252,11 +247,9 @@ class CtaEngine(BaseEngine):
                     stop_order.status = StopOrderStatus.TRIGGERED
                     stop_order.vt_orderid = vt_orderid
 
-                    self.call_strategy_func(
-                        strategy, strategy.on_stop_order, stop_order
-                    )
+                    self.call_strategy_func(strategy, strategy.on_stop_order, stop_order)
 
-    def send_limit_order(self, strategy: CtaTemplate, order_type: CtaOrderType, price: float, volume: float, ):
+    def send_limit_order(self, strategy: CtaTemplate, order_type: CtaOrderType, price: float, volume: float,):
         """
         Send a new order.
         """
@@ -268,17 +261,10 @@ class CtaEngine(BaseEngine):
         direction, offset = ORDER_CTA2VT[order_type]
 
         # Create request and send order.
-        req = OrderRequest(
-            symbol=contract.symbol,
-            exchange=contract.exchange,
-            dierction=direction,
-            offset=offset,
-            price_type=PriceType.LIMIT,
-            price=price,
-            volume=volume,
-        )
-        vt_orderid = self.main_engine.send_order(
-            req, contract.gateway_name)
+        req = OrderRequest(symbol=contract.symbol,exchange=contract.exchange,dierction=direction,
+                           offset=offset,price_type=PriceType.LIMIT,price=price,volume=volume,)
+
+        vt_orderid = self.main_engine.send_order(req, contract.gateway_name)
 
         # Save relationship between orderid and strategy.
         self.orderid_strategy_map[vt_orderid] = strategy
@@ -326,8 +312,6 @@ class CtaEngine(BaseEngine):
 
         req = order.create_cancel_request()
         self.main_engine.cancel_limit_order(req, order.gateway_name)
-
-    # cancel_limit_order是从MainEngine中继承而来的？？
 
     def cancel_stop_order(self, strategy: CtaTemplate, stop_orderid: str):
         """
@@ -411,6 +395,7 @@ class CtaEngine(BaseEngine):
         """"""
         end = datetime.now()
         start = end - timedelta(days)
+
 
         s = (
             DbTickData.select()
@@ -501,8 +486,7 @@ class CtaEngine(BaseEngine):
             # Subscribe market data
             contract = self.main_engine.get_contract(strategy.vt_symbol)
             if contract:
-                req = SubscribeRequest(
-                    symbol=contract.symbol, exchange=contract.exchange)
+                req = SubscribeRequest(symbol=contract.symbol, exchange=contract.exchange)
                 self.main_engine.subscribe(req, contract.gateway_name)
             else:
                 self.write_log(f"行情订阅失败，找不到合约{strategy.vt_symbol}", strategy)
@@ -572,9 +556,7 @@ class CtaEngine(BaseEngine):
         Load strategy class from source code.
         """
         path1 = Path(__file__).parent.joinpath("strategies")
-        self.load_strategy_class_from_folder(
-            path1, "vnpy.app.cta_strategy.strategies")
-
+        self.load_strategy_class_from_folder(path1, "vnpy.app.cta_strategy.strategies")
         path2 = Path.cwd().joinpath("strategies")
         self.load_strategy_class_from_folder(path2, "strategies")
 
@@ -585,8 +567,7 @@ class CtaEngine(BaseEngine):
         for dirpath, dirnames, filenames in os.walk(path):
             for filename in filenames:
                 if filename.endswith(".py"):
-                    strategy_module_name = ".".join(
-                        [module_name, filename.replace(".py", "")])
+                    strategy_module_name = ".".join([module_name, filename.replace(".py", "")])
                     self.load_strategy_class_from_module(strategy_module_name)
 
     def load_strategy_class_from_module(self, module_name: str):
