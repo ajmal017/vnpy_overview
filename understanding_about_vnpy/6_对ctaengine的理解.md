@@ -5,24 +5,24 @@
 4. CtaEngine通过主引擎MainEngine和事件引擎EvnetEngine作为参数实例化
 5. 主引擎MainEngine则又通过事件引擎EnventEngine实例化
 ## 成员变量
-self.strategy_setting = {}  用于容纳各种策略的各种参数,用于后续的策略加载
-self.strategy_data = {}  用于存储需要保存的策略的数据
-
-self.classes = {}  用于存储多个策略的类
-self.strategies = {}  用于存储多个策略的名字
-
-self.symbol_strategy_map = defaultdict(list)  
-self.orderid_strategy_map = {}  
-self.strategy_orderid_map = defaultdict(set)  
-
-self.stop_order_count = 0  
-self.stop_orders = {}  
-
-self.init_thread = None
-self.init_queue = Queue()
-
-self.rq_client = None
-self.rq_symbols = set()
+    self.strategy_setting = {}  用于容纳各种策略的各种参数,用于后续的策略加载
+    self.strategy_data = {}  用于存储需要保存的策略的数据
+    
+    self.classes = {}  用于存储多个策略的类
+    self.strategies = {}  用于存储多个策略的名字
+    
+    self.symbol_strategy_map = defaultdict(list)  
+    self.orderid_strategy_map = {}  
+    self.strategy_orderid_map = defaultdict(set)  
+    
+    self.stop_order_count = 0  
+    self.stop_orders = {}  
+    
+    self.init_thread = None
+    self.init_queue = Queue()
+    
+    self.rq_client = None
+    self.rq_symbols = set()
 
 ## 成员函数
 1. init_engine是个比较高级的函数,后续再说
